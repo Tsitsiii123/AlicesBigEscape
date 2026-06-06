@@ -51,4 +51,25 @@ public class RabbitAI : MonoBehaviour
             agent.SetDestination(hit.position); // Set the NavMeshAgent's destination to the valid position found by sampling the NavMesh, allowing the rabbit to wander around when not fleeing from the player
         }
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player")) // Check if the rabbit collides with the player
+        {
+            agent.isStopped = true; // Stop the NavMeshAgent's movement when colliding with the player
+            transform.LookAt(player.position); // Make the rabbit look towards the player upon collision
+
+            Debug.Log("Rabbit collided with the player! Implement collision logic here."); // Placeholder for collision logic, can be replaced with actual functionality as needed
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Player")) // Check if the rabbit stops colliding with the player
+        {
+            agent.isStopped = false; // Resume the NavMeshAgent's movement when no longer colliding with the player
+
+            Debug.Log("Rabbit stopped colliding with the player! Implement logic for when the rabbit can move again."); // Placeholder for logic to handle when the rabbit can move again after colliding with the player, can be replaced with actual functionality as needed  
+        }
+    }
 }

@@ -5,11 +5,13 @@ public class PlayerMovement : MonoBehaviour
     public float moveSpeed = 10f; // Speed at which the player moves
     public float mouseSensitivity = 100f; // Sensitivity for mouse movement to control player rotation
     private Rigidbody rb; // Reference to the player's Rigidbody component
+    private GameManager gameManager; // Reference to the GameManager to check game state
 
 
     void Start()
     {
         rb = GetComponent<Rigidbody>(); // Get the Rigidbody component attached to the player
+        gameManager = FindObjectOfType<GameManager>(); // Find the GameManager in the scene to access its properties and methods
         Cursor.lockState = CursorLockMode.Locked; // Lock the cursor to the center of the screen for better control during gameplay
     }
     void Update()
@@ -20,10 +22,10 @@ public class PlayerMovement : MonoBehaviour
 
     public void HandleInput()
     {
-        //if (gameManager.IsGameOver) // Check if the game is over to prevent any input processing after the game has ended
-        //{
-        //    return; // If the game is over, exit the method and do not process input
-        //}
+        if (gameManager.isGameOver || gameManager.isPaused) // Check if the game is over or paused to prevent any input processing
+        {
+            return; // If the game is over or paused, exit the method and do not process input
+        }
 
         Vector3 direction = Vector3.zero; // Initialize a direction vector to store the movement direction based on player input
 
