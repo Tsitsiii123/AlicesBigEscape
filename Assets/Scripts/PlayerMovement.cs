@@ -2,16 +2,20 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public float moveSpeed = 5f; // Speed at which the player moves
+    public float moveSpeed = 10f; // Speed at which the player moves
+    public float mouseSensitivity = 100f; // Sensitivity for mouse movement to control player rotation
     private Rigidbody rb; // Reference to the player's Rigidbody component
+
 
     void Start()
     {
         rb = GetComponent<Rigidbody>(); // Get the Rigidbody component attached to the player
+        Cursor.lockState = CursorLockMode.Locked; // Lock the cursor to the center of the screen for better control during gameplay
     }
     void Update()
     {
         HandleInput(); // Call the method to handle player input every frame
+        HandleMouseLook(); // Call the method to handle mouse look every frame
     }
 
     public void HandleInput()
@@ -42,8 +46,23 @@ public class PlayerMovement : MonoBehaviour
         {
             direction.x = 1f; // Move right (positive x direction)
         }
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            moveSpeed = 20f; // Increase move speed when Left Shift is held down (sprint)
+        }
+        else
+        {
+            moveSpeed = 10f; // Reset move speed to normal when Left Shift is not held down
+        }
 
-        rb.linearVelocity = new Vector3(direction.x * moveSpeed, rb.linearVelocity.y, direction.z * moveSpeed); // Set the player's velocity based on the input direction and move speed while preserving the y velocity for gravity
+        Vector3 finalMovement = (transform.forward * direction.z + transform.right * direction.x).normalized; // Calculate the final movement vector by combining the forward and right directions of the player with the input direction
+        rb.linearVelocity = new Vector3(finalMovement.x * moveSpeed, rb.linearVelocity.y, finalMovement.z * moveSpeed); // Set the player's velocity based on the calculated movement vector and the defined move speed, while preserving the current vertical velocity (y-axis)
+    }
 
+    public void HandleMouseLook()
+    {
+        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime; // Get horizontal mouse movement and apply sensitivity and time scaling
+
+        transform.Rotate(Vector3.up * mouseX); // Rotate the player horizontally based on mouse movement
     }
 }
