@@ -23,6 +23,8 @@ public class EnemySpawner : MonoBehaviour
 
         int guardsToSpawn = targetGuardCount - currentGuardCount; // Calculate how many guards need to be spawned to reach the target count for the current level
 
+        int guardsToDelete = currentGuardCount - targetGuardCount; // Calculate how many guards need to be deleted if there are more than the target count for the current level
+
         if (guardsToSpawn > 0) // Check if there are guards that need to be spawned
         {
             for (int i = 0; i < guardsToSpawn; i++) // Loop to spawn the required number of guards
@@ -37,6 +39,25 @@ public class EnemySpawner : MonoBehaviour
                 else
                 {
                     Debug.LogWarning("Could not find a valid spawn position for a guard. Retrying...)"); // Log a warning message if a valid spawn position could not be found for a guard, indicating that the spawn attempt will be retried   
+                }
+            }
+        }
+
+        else if (currentGuardCount >= targetGuardCount) // Check if the current number of guards is already at or above the target count for the current level
+        {
+            int guardsDeleted = 0; // Counter to track how many guards have been deleted
+
+            foreach (GameObject guard in currentGuards) // Loop through each existing guard to delete the excess guards if there are more than the target count for the current level
+            {
+                if (guardsDeleted >= guardsToDelete) // Check if we still need to delete more guards to reach the target count
+                {
+                    break; // If we have deleted enough guards to reach the target count, break out of the loop and stop deleting more guards
+                }
+                
+                if (Vector3.Distance(guard.transform.position, player.position) > minSpawnDistanceFromPlayer) // Check if this guard is far enough from the player to be safely deleted without affecting gameplay
+                {
+                    Destroy(guard); // If it is far enough from the player, destroy this guard to reduce the total count of guards in the scene
+                    guardsDeleted++; // Increment the counter for how many guards have been deleted
                 }
             }
         }

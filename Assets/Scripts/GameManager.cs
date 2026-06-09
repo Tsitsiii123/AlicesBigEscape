@@ -5,6 +5,7 @@ public class GameManager : MonoBehaviour
 {
     public bool isGameOver = false; // Flag to track if the game is over
     public bool isPaused = false; // Flag to track if the game is paused
+    private RabbitSpawner rabbitSpawner; // Reference to the RabbitSpawner script to manage rabbit spawning
 
     void Start()
     {
@@ -24,6 +25,9 @@ public class GameManager : MonoBehaviour
         isGameOver = false; // Set the game over flag to false to indicate the game is active
         isPaused = false; // Set the paused flag to false to ensure the game is not paused when starting
         Time.timeScale = 1f; // Set the time scale to normal to allow the game to run at normal speed
+        
+        rabbitSpawner = GetComponent<RabbitSpawner>(); // Find the RabbitSpawner script in the scene to manage rabbit spawning
+        rabbitSpawner.SpawnRabbit(); // Call the method to spawn initial rabbits when the game starts
 
         Debug.Log("Game Started"); // Log a message to the console indicating that the game has started
     }

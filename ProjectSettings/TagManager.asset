@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Guard
   - Checkpoint
+  - Rabbit
   layers:
   - Default
   - TransparentFX

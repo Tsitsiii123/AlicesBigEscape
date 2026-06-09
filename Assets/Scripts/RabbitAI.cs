@@ -14,6 +14,7 @@ public class RabbitAI : MonoBehaviour
     void Start()
     {
         agent = GetComponent<NavMeshAgent>(); // Get the NavMeshAgent component attached to the rabbit
+        player = GameObject.FindGameObjectWithTag("Player").transform; // Find the player game object by tag and get its transform to track the player's position
         playerRb = player.GetComponent<Rigidbody>(); // Get the Rigidbody component attached to the player for potential future use
     }
 
