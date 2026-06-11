@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 6098900387187768646}
   - component: {fileID: 1107473759113896501}
   m_Layer: 0
-  m_Name: VanishPotion
+  m_Name: CollectedVanishPotion
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

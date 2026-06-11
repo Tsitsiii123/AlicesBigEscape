@@ -10,6 +10,9 @@ public class RabbitAI : MonoBehaviour
     public float speedMultiplier = 1.2f; // Multiplier to increase the rabbit's speed when fleeing
     public float normalSpeed = 5f; // Normal speed of the rabbit when not fleeing
     public float wanderRadius = 50f; // Radius within which the rabbit will wander when not fleeing
+    public bool canHeal = true; // Flag to determine if the rabbit can heal the player upon collision, can be set to false if healing is not desired
+    public float cooldownDuration = 60f; // Duration of the cooldown period after healing, during which the rabbit cannot heal again, can be adjusted as needed
+    public float cooldownTimer = 0f; // Timer to track the cooldown period for healing, initialized to 0
 
     void Start()
     {
@@ -21,6 +24,17 @@ public class RabbitAI : MonoBehaviour
     void Update()
     {
         FleeFromPlayer();
+        
+        if (!canHeal) // Check if the rabbit is currently on cooldown and cannot heal
+        {
+            cooldownTimer -= Time.deltaTime; // Increment the cooldown timer by the time elapsed since the last frame
+
+            if (cooldownTimer <= 0f) // Check if the cooldown timer has reached zero
+            {
+                canHeal = true; // Reset the canHeal flag to true, allowing the rabbit to heal again after the cooldown period has ended
+                cooldownTimer = 0f; // Reset the cooldown timer to 0 for the next healing cycle
+            }
+        }
     }
 
     public void FleeFromPlayer()
@@ -61,6 +75,19 @@ public class RabbitAI : MonoBehaviour
             transform.LookAt(player.position); // Make the rabbit look towards the player upon collision
 
             Debug.Log("Rabbit collided with the player! Implement collision logic here."); // Placeholder for collision logic, can be replaced with actual functionality as needed
+        
+            if (canHeal) // Check if the rabbit collides with the player and is currently able to heal
+            {
+                PlayerHealth playerHealth = other.GetComponent<PlayerHealth>(); // Get the PlayerHealth component from the player to access health-related functionality
+
+                if (playerHealth != null) // Check if the PlayerHealth component was successfully retrieved
+                {
+                    playerHealth.EatCake(); // Call the EatCake method on the player's health to restore health when colliding with the rabbit, simulating a healing effect
+                    Debug.Log("Ha ha! That was fun! Well done catching me! Here is a small reward!");
+                    canHeal = false; // Set the canHeal flag to false to start the cooldown period after healing
+                    cooldownTimer = cooldownDuration; // Reset the cooldown timer to the defined cooldown duration for tracking when the rabbit can heal again after this collision
+                }
+            }
         }
     }
 
