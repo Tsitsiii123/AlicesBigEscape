@@ -7,7 +7,11 @@ public class IllusionManager : MonoBehaviour
     public Transform mazeWallsParent; // Reference to the parent transform that contains all the maze wall objects to manage their visibility for the illusion effect
     public Material invisibleMaterial; // Reference to the material that will be applied to the maze walls when they are made invisible for the illusion effect
     public Material originalMaterial; // Reference to store the original material of the maze walls so that we can restore it after the illusion effect ends
-    
+
+    [Header("Player Settings")] 
+    public Transform playerTransform; // Reference to the player's transform to potentially use for distance-based illusion effects or other player-related logic for the illusion effect, can be set in the Unity editor to link it to the player object in the scene
+    public float safeDistance = 20f; // Distance threshold to ensure that walls are not made invisible if the player is too close to them for the illusion effect, can be adjusted in the Unity editor based on the desired gameplay experience for the illusion effect
+
     [Header("Difficulty Settings")]
     private int currentWallsToChange; // Counter to track how many walls have been changed to invisible during the illusion effect, used to ensure we only change the intended number of walls
     public int[] wallsToChangePerLevel = new int[5]; // Array to store the number of walls to change for the illusion effect based on the difficulty level, can be set in the Unity editor for each level
@@ -16,6 +20,13 @@ public class IllusionManager : MonoBehaviour
     
     void Start()
     {
+        for (int i = 0; i < mazeWallsParent.childCount; i++) // Loop through all the child objects of the maze walls parent transform to store their original materials for later restoration after the illusion effect ends
+        {
+            GameObject wall = mazeWallsParent.GetChild(i).gameObject; // Get the wall at the current index
+            Renderer wallRenderer = wall.GetComponent<Renderer>(); // Get the renderer component of this wall to access its material for storing the original material for later restoration after the illusion effect ends
+            wallRenderer.material = originalMaterial; // Set the material of this wall to the original material to ensure all walls start with the correct material for the illusion effect and to store it for later restoration after the illusion effect ends
+        }
+
         SetDifficultyLevel(0); // Set the initial difficulty level to 0 (or the desired starting level) to initialize the number of walls to change for the illusion effect based on the defined values for that level
     }
 
@@ -38,7 +49,7 @@ public class IllusionManager : MonoBehaviour
                 int randomIndex = Random.Range(0, mazeWallsParent.childCount); // Get a random index to select a random wall from the maze walls parent transform
                 GameObject wallToChange = mazeWallsParent.GetChild(randomIndex).gameObject; // Get the wall at the random index
 
-                if (!activeIllusionWalls.Contains(wallToChange)) // Check if this wall is not already invisible to avoid changing the same wall multiple times for the illusion effect
+                if (!activeIllusionWalls.Contains(wallToChange) && Vector3.Distance(playerTransform.position, wallToChange.transform.position) > safeDistance) // Check if this wall is not already invisible to avoid changing the same wall multiple times for the illusion effect
                 {
                     activeIllusionWalls.Add(wallToChange); // Add this wall to the list of currently invisible walls so we can track it for later restoration
                     wallToChange.GetComponent<Renderer>().material = invisibleMaterial; // Change the material of this wall to the invisible material to create the illusion effect
