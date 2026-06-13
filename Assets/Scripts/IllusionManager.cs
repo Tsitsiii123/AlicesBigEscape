@@ -72,15 +72,33 @@ public class IllusionManager : MonoBehaviour
             {
                 if (activeIllusionWalls.Count > 0) // Check if there are any currently invisible walls to restore
                 {
-                    int randomListIndex = Random.Range(0, activeIllusionWalls.Count); // Get a random index to select a random wall from the list of currently invisible walls
-                    GameObject wallToRestore = activeIllusionWalls[randomListIndex]; // Get the wall at the random index from the list of currently invisible walls to restore its material for the illusion effect
-                    activeIllusionWalls.RemoveAt(randomListIndex); // Remove this wall from the list of currently invisible walls since we are restoring it to visible
-                    wallToRestore.GetComponent<Renderer>().material = originalMaterial; // Change the material of this wall back to the original material to end the illusion effect for this wall
-                
-                    InvisibleWall scriptToRemove = wallToRestore.GetComponent<InvisibleWall>(); // Get the script component that handles the invisible wall behavior to disable it since we are restoring this wall to visible
-                    if (scriptToRemove != null) // Check if this wall has the script component for the invisible wall behavior to disable it
+                    List<GameObject> safeWallsToRestore = new List<GameObject>(); // Create a list to store walls that are safe to restore based on the player's distance
+                    foreach (GameObject wall in activeIllusionWalls) // Loop through the currently invisible walls
                     {
-                        Destroy(scriptToRemove); // Destroy the script component that handles the invisible wall behavior to ensure this wall is fully restored to visible and does not have any remaining effects from being invisible for the illusion effect
+                        if (Vector3.Distance(playerTransform.position, wall.transform.position) > safeDistance) // Check if this wall is far enough from the player to safely restore it to visible for the illusion effect
+                        {
+                            safeWallsToRestore.Add(wall); // Add this wall to the list of safe walls to restore based on the player's distance
+                        }
+                    }
+
+                    if (safeWallsToRestore.Count > 0)
+                    {
+                        int randomListIndex = Random.Range(0, safeWallsToRestore.Count); // Get a random index to select a random wall from the list of safe walls to restore
+                        GameObject wallToRestore = safeWallsToRestore[randomListIndex]; // Get the wall at the random index from the list of safe walls to restore
+                        activeIllusionWalls.Remove(wallToRestore); // Remove this wall from the list of currently invisible walls since we are restoring it to visible
+                        wallToRestore.GetComponent<Renderer>().material = originalMaterial; // Change the material of this wall back to the original material to end the illusion effect for this wall
+
+                        InvisibleWall scriptToRemove = wallToRestore.GetComponent<InvisibleWall>(); // Get the script component that handles the invisible wall behavior to disable it since we are restoring this wall to visible
+                        
+                        if (scriptToRemove != null) // Check if this wall has the script component for the invisible wall behavior to disable it
+                        {
+                            Destroy(scriptToRemove); // Destroy the script component that handles the invisible wall behavior to ensure this wall is fully restored to visible and does not have any remaining effects from being invisible for the illusion effect
+                        }
+                    }
+
+                    else
+                    {
+                        break; // If there are no safe walls to restore, break out of the loop to avoid an infinite loop and ensure we do not attempt to restore walls that are too close to the player for the illusion effect
                     }
                 }
             }

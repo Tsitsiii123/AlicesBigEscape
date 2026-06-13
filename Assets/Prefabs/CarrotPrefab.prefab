@@ -126,5 +126,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e43363c3fbaf8947a28d7d6f9e5b8c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::QuestItem
+  itemName: a carrot
   requiredStateToCollect: 5
   stateAfterCollection: 6
+  isMultipleItem: 1
+  totalItemsNeeded: 10
+  minTime: 5
+  maxTime: 10
