@@ -1,8 +1,10 @@
+using Microsoft.VisualBasic;
 using UnityEngine;
 using UnityEngine.AI;
 
 public class RabbitAI : MonoBehaviour
-{
+{   
+    private QuestManager questManager; // Reference to the QuestManager to check if the player has completed the quest to find the rabbit
     public Transform player; // Reference to the player's transform to track their position
     private NavMeshAgent agent; // Reference to the NavMeshAgent component for pathfinding and movement
     public float fleeDistance = 10f; // Distance at which the rabbit will start fleeing from the player
@@ -16,6 +18,7 @@ public class RabbitAI : MonoBehaviour
 
     void Start()
     {
+        questManager = FindObjectOfType<QuestManager>(); // Find the QuestManager in the scene to check if the player has completed the quest to find the rabbit
         agent = GetComponent<NavMeshAgent>(); // Get the NavMeshAgent component attached to the rabbit
         player = GameObject.FindGameObjectWithTag("Player").transform; // Find the player game object by tag and get its transform to track the player's position
         playerRb = player.GetComponent<Rigidbody>(); // Get the Rigidbody component attached to the player for potential future use
@@ -87,6 +90,9 @@ public class RabbitAI : MonoBehaviour
                     canHeal = false; // Set the canHeal flag to false to start the cooldown period after healing
                     cooldownTimer = cooldownDuration; // Reset the cooldown timer to the defined cooldown duration for tracking when the rabbit can heal again after this collision
                 }
+
+                string msg = "Ha ha! That was fun! Well done catching me! Here is a small reward!"; // Create a message to display when the rabbit heals the player
+                questManager.UpdateDialogue(msg); // Call the UpdateDialogue method on the QuestManager to display the message in the UI, providing feedback to the player about the interaction with the rabbit and the reward received
             }
         }
     }

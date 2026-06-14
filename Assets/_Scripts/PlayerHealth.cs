@@ -10,6 +10,8 @@ public class PlayerHealth : MonoBehaviour
     {
         gameManager = FindObjectOfType<GameManager>(); // Find the GameManager in the scene to manage game over state
         checkpointManager = FindObjectOfType<CheckpointManager>(); // Find the CheckpointManager in the scene to manage player respawning at checkpoints
+
+        gameManager.UpdateLivesUI(currentHealth); // Update the UI to reflect the player's current health when the game starts
     }
     public void EatCake()
     {
@@ -20,6 +22,7 @@ public class PlayerHealth : MonoBehaviour
             currentHealth = maxHealth; // If it does, set the current health to the maximum health to prevent it from exceeding the limit
         }
 
+        gameManager.UpdateLivesUI(currentHealth); // Update the UI to reflect the player's current health after consuming a cake
         Debug.Log($"Ate cake. Current health: {currentHealth}"); // Log a message to the console indicating that the player ate a cake and showing the current health after consuming the item
     }
 
@@ -39,6 +42,7 @@ public class PlayerHealth : MonoBehaviour
             transform.position = respawnPosition; // Move the player's position to the closest checkpoint for respawning after taking damage
         }
 
+        gameManager.UpdateLivesUI(currentHealth); // Update the UI to reflect the player's current health after taking damage
         Debug.Log($"Took damage. Current health: {currentHealth}"); // Log a message to the console indicating that the player took damage and showing the current health after taking damage
 
 
