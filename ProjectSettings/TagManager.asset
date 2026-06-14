@@ -10,6 +10,7 @@ TagManager:
   - Cake
   - VanishPotion
   - MapItem
+  - Carrot
   layers:
   - Default
   - TransparentFX
