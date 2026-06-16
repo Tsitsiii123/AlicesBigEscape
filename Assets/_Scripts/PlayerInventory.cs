@@ -5,6 +5,7 @@ public class PlayerInventory : MonoBehaviour
 {
     public Dictionary<string, int> collectedItems = new Dictionary<string, int>(); // Dictionary to store the player's inventory items and their quantities
     private GameManager gameManager; // Reference to the GameManager to update the UI when items are collected or consumed
+    public AudioClip collectSound; // Reference to the audio clip that will play when an item is collected
 
     void Start()
     {
@@ -23,6 +24,7 @@ public class PlayerInventory : MonoBehaviour
             collectedItems[itemType] = 1; // If it does not exist, add the item type to the inventory with a quantity of 1
         }
 
+        AudioSource.PlayClipAtPoint(collectSound, transform.position); // Play the collect sound at the player's position when an item is collected
         UpdateUI(); // Update the UI to reflect the player's current inventory after adding an item
         Debug.Log($"Collected {itemType}. Total: {collectedItems[itemType]}"); // Log a message to the console indicating the item collected and the total quantity of that item type in the inventory
     }

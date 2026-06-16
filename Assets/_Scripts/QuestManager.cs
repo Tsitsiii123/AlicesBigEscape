@@ -36,7 +36,7 @@ public class QuestManager : MonoBehaviour
         dialogueText.text = message; // Update the text of the dialogueText component to display the provided message for the quest manager
     
         CancelInvoke("HideDialogue"); // Cancel any previously scheduled invocation of the HideDialogue method to prevent it from being called multiple times and ensure that the dialogue panel remains visible for the appropriate duration
-        Invoke("HideDialogue", 2f); // Schedule the HideDialogue method to be called after a delay of 2 seconds to automatically hide the dialogue panel after displaying the message for the quest manager
+        Invoke("HideDialogue", 4f); // Schedule the HideDialogue method to be called after a delay of 4 seconds to automatically hide the dialogue panel after displaying the message for the quest manager
     }
 
     public void HideDialogue()
@@ -50,7 +50,7 @@ public class QuestManager : MonoBehaviour
         collectionText.text = message; // Update the text of the collectionText component to display the provided message for the quest manager
     
         CancelInvoke("HideCollectionMessage"); // Cancel any previously scheduled invocation of the HideCollectionMessage method to prevent it from being called multiple times and ensure that the collection panel remains visible for the appropriate duration
-        Invoke("HideCollectionMessage", 1f); // Schedule the HideCollectionMessage method to be called after a delay of 1 seconds to automatically hide the collection panel after displaying the message for the quest manager
+        Invoke("HideCollectionMessage", 4f); // Schedule the HideCollectionMessage method to be called after a delay of 4 seconds to automatically hide the collection panel after displaying the message for the quest manager
     }
 
     public void HideCollectionMessage()

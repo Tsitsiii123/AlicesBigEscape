@@ -8,7 +8,7 @@ public class PlayerInteraction : MonoBehaviour
     public float throwForce = 2f; // Variable to define the force with which the potion projectile will be thrown
     public float throwUpwardForce = 2f; // Variable to define the upward force applied to the potion projectile when thrown
     private PlayerHealth playerHealth; // Reference to the PlayerHealth component to manage the player's health when consuming items
-
+    public AudioClip throwSound; // Reference to the audio clip that will play when the player throws a vanish potion
     void Start()
     {
         inventory = GetComponent<PlayerInventory>(); // Get the PlayerInventory component attached to the player to manage collected items
@@ -56,6 +56,7 @@ public class PlayerInteraction : MonoBehaviour
         Vector3 forceToAdd = (throwPoint.forward * throwForce) + (transform.up * throwUpwardForce); // Calculate the total force to apply to the potion projectile by combining forward and upward forces
         rb.AddForce(forceToAdd, ForceMode.Impulse); // Apply the calculated force to the potion projectile using Impulse mode
 
+        AudioSource.PlayClipAtPoint(throwSound, transform.position); // Play the throw sound at the player's position when throwing a vanish potion
         Debug.Log("Threw vanish potion."); // Log a message to the console indicating that the player threw a vanish potion. The actual effects of the vanish potion would be implemented in the Interact method of the VanishPotion class or through additional logic in this method.
     }
 }        

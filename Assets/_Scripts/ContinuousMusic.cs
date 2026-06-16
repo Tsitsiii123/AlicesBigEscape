@@ -10,6 +10,7 @@ public class ContinuousMusic : MonoBehaviour
         {
             instance = this;
             DontDestroyOnLoad(gameObject); // Ensure the music persists across scene changes
+            GetComponent<AudioSource>().ignoreListenerPause = true;
         }
         else
         {

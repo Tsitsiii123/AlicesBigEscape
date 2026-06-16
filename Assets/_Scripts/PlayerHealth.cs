@@ -6,6 +6,7 @@ public class PlayerHealth : MonoBehaviour
     public int maxHealth = 100; // Variable to define the player's maximum health
     private GameManager gameManager; // Reference to the GameManager to handle game over state when health reaches 0
     private CheckpointManager checkpointManager; // Reference to the CheckpointManager to find the closest checkpoint for respawning the player
+    public AudioClip HealthSound; // Reference to the audio clip that will play when the player takes damage
     void Start()
     {
         gameManager = FindObjectOfType<GameManager>(); // Find the GameManager in the scene to manage game over state
@@ -22,6 +23,7 @@ public class PlayerHealth : MonoBehaviour
             currentHealth = maxHealth; // If it does, set the current health to the maximum health to prevent it from exceeding the limit
         }
 
+        AudioSource.PlayClipAtPoint(HealthSound, transform.position); // Play the health sound at the player's position when consuming a LifeItem
         gameManager.UpdateLivesUI(currentHealth); // Update the UI to reflect the player's current health after consuming a cake
         Debug.Log($"Ate cake. Current health: {currentHealth}"); // Log a message to the console indicating that the player ate a cake and showing the current health after consuming the item
     }

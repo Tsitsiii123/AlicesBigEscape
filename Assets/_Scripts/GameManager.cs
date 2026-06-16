@@ -12,7 +12,9 @@ public class GameManager : MonoBehaviour
     public GameObject gameOverUI; // Reference to the game over UI GameObject to show or hide the game over screen when the game ends
     public GameObject victoryUI; // Reference to the victory UI GameObject to show or hide the victory screen when the player wins the game
     public GameObject hudUI; // Reference to the HUD UI GameObject to show or hide the HUD when the game is paused or over
-
+    public AudioClip gameOverSound; // Reference to the audio clip that will play when the game is over
+    public AudioClip victorySound; // Reference to the audio clip that will play when the player achieves victory
+    
     [Header("UI Elements")]
     public RawImage[] hearts; // Array of RawImage elements to represent the player's health visually
     public TextMeshProUGUI cakesText; // Reference to the game over text element to display the amount of cakes available
@@ -75,6 +77,7 @@ public class GameManager : MonoBehaviour
 
     public void GameOver()
     {
+        AudioSource.PlayClipAtPoint(gameOverSound, transform.position); // Play the game over sound at the player's position
         isGameOver = true; // Set the game over flag to true to indicate that the game has ended
         Time.timeScale = 0f; // Set the time scale to 0 to stop all game activity when the game is over
 
@@ -87,6 +90,7 @@ public class GameManager : MonoBehaviour
 
     public void Victory()
     {
+        AudioSource.PlayClipAtPoint(victorySound, transform.position); // Play the victory sound at the player's position
         isGameOver = true; // Set the game over flag to true to indicate that the game has ended
         Time.timeScale = 0f; // Set the time scale to 0 to stop all game activity when the player achieves victory
 
