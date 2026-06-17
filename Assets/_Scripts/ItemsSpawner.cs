@@ -24,7 +24,7 @@ public class ItemsSpawner : MonoBehaviour
     public float minSpawnDistanceFromOtherCakes = 25f; // Minimum distance from other items at which new items can spawn
     public float minSpawnDistanceFromOtherVanishPotions = 25f; // Minimum distance from other items at which new items can spawn
 
-
+    private float searchTimer = 0f; // Timer to track the time elapsed since the last search for missing items
     private List<float> cakeTimers = new List<float>(); // List to track the respawn timers for each cake currently in the scene
     private List<float> vanishPotionTimers = new List<float>(); // List to track the respawn timers for each vanish potion currently in the scene
 
@@ -33,14 +33,21 @@ public class ItemsSpawner : MonoBehaviour
     public float mapMinZ = -293f; // Minimum Z coordinate for spawning items
     public float mapMaxZ = 12f; // Maximum Z coordinate for spawning items
 
+
     void Start()
     {
         SetDifficultyLevel(0); // Initialize the item respawn timers based on the first level's settings at the start of the game
     }
     void Update()
     {
-        CheckMissingCakes(); // Call the method to handle spawning cakes based on the defined respawn logic
-        CheckMissingVanishPotions(); // Call the method to handle spawning vanish potions based on the defined respawn logic
+        searchTimer += Time.deltaTime; // Increment the search timer by the time elapsed since the last frame
+
+        if (searchTimer >= 2f) // Check if 2 seconds have passed since the last search for missing items
+        {
+            CheckMissingCakes(); // Call the method to check for missing cakes and add timers for respawning them if needed
+            CheckMissingVanishPotions(); // Call the method to check for missing vanish potions and add timers for respawning them if needed
+            searchTimer = 0f; // Reset the search timer to start counting for the next 2-second interval
+        }
         TickTimersAndSpawn(); // Call the method to update the respawn timers and spawn items when their timers reach zero
     }
 

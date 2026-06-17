@@ -44,8 +44,19 @@ public class IllusionManager : MonoBehaviour
         {
             int wallsToAdd = currentWallsToChange - currentInvisibleWalls; // Calculate how many more walls we need to make invisible to reach the target for the illusion effect
 
+            int maxAttempts = 100; // Set a maximum number of attempts to avoid potential infinite loops when trying to find walls to change for the illusion effect
+            int attempts = 0; // Initialize a counter for the number of attempts made to find walls to change for the illusion effect
+
             for (int i = 0; i < wallsToAdd; i++) // Loop through the number of walls we need to make invisible
             {
+                attempts++; // Increment the attempts counter for each iteration to track how many attempts have been made to find walls to change for the illusion effect
+
+                if (attempts > maxAttempts) // Check if we have exceeded the maximum number of attempts to avoid potential infinite loops when trying to find walls to change for the illusion effect
+                {
+                    Debug.LogWarning("Max attempts reached while trying to find walls to change for the illusion effect."); // Log a warning message to indicate that we have reached the maximum number of attempts for finding walls to change for the illusion effect
+                    break; // Break out of the loop to avoid an infinite loop and ensure we do not continue trying to find walls to change for the illusion effect
+                }
+                
                 int randomIndex = Random.Range(0, mazeWallsParent.childCount); // Get a random index to select a random wall from the maze walls parent transform
                 GameObject wallToChange = mazeWallsParent.GetChild(randomIndex).gameObject; // Get the wall at the random index
 

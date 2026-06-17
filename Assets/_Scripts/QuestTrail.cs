@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.AI;
+using TMPro;
 
 public class QuestTrail : MonoBehaviour
 {
@@ -7,11 +8,16 @@ public class QuestTrail : MonoBehaviour
     private NavMeshPath path; // Reference to the NavMeshPath component to calculate the path
     private QuestManager questManager; // Reference to the QuestManager script to access the current quest step and status for this quest trail, can be set in the Unity editor to link it to the appropriate quest manager object in the scene
     private bool isTrailActive = false; // Variable to track whether the trail is currently active for the quest, can be used to enable or disable the trail based on the current quest state
+    public TextMeshProUGUI trailText; // Reference to the TextMeshProUGUI component to display the trail text for the quest, can be set in the Unity editor to link it to the appropriate text object in the scene
 
     [Header("Trail Targets")]
     public Transform rabbitTarget; // Reference to the Transform component of the rabbit target for the quest trail, can be set in the Unity editor to link it to the appropriate target object in the scene
     public Transform bookTarget; // Reference to the Transform component of the book target for the quest trail, can be set in the Unity editor to link it to the appropriate target object in the scene
     public Transform potTarget; // Reference to the Transform component of the pot target for the quest trail, can be set in the Unity editor to link it to the appropriate target object in the scene
+    
+    private float carrotSearchTimer = 0f; // Timer to track the time elapsed since the last search for the closest carrot, can be used to periodically update the closest carrot target for the quest trail
+    private Transform cachedClosestCarrot = null; // Cached reference to the closest carrot Transform to avoid unnecessary searches for the closest carrot, can be used to optimize performance by reducing the frequency of searches for the closest carrot target for the quest trail
+
     void Start()
     {
         line = GetComponent<LineRenderer>(); // Get the LineRenderer component attached to this GameObject to initialize the reference for the quest trail
@@ -24,6 +30,15 @@ public class QuestTrail : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.H)) // Check if the player has pressed the "H" key to toggle the trail for the quest
         {
             isTrailActive = !isTrailActive; // Toggle the isTrailActive flag to enable or disable the trail for the quest
+
+            if (isTrailActive)
+            {
+                trailText.text = "Trail Help (H): ON"; // Update the trail text to indicate that the trail is currently active for the quest
+            }
+            else
+            {
+                trailText.text = "Trail Help (H): OFF"; // Update the trail text to indicate that the trail is currently inactive for the quest
+            }
         }
 
         if (!isTrailActive) // Check if the trail is not active to determine if we should skip the trail drawing logic for the quest
@@ -48,7 +63,15 @@ public class QuestTrail : MonoBehaviour
         }
         else if (questManager.storyState == 5) // Check if the current story state is 5 to determine if the rabbit target should be used for the quest trail
         {
-            currentTarget = FindClosestCarrot(); // Set the current target to the closest carrot for the quest trail by calling the FindClosestCarrot method
+            carrotSearchTimer += Time.deltaTime; // Increment the carrot search timer by the time elapsed since the last frame to track how long it has been since the last search for the closest carrot target for the quest trail
+            
+            if (carrotSearchTimer >= 1f || cachedClosestCarrot == null) // Check if 1 second has passed since the last search for the closest carrot or if there is no cached closest carrot to determine if we should perform a new search for the closest carrot target for the quest trail
+            {
+                cachedClosestCarrot = FindClosestCarrot(); // Call the FindClosestCarrot method to find the closest carrot target for the quest trail and update the cached closest carrot reference
+                carrotSearchTimer = 0f; // Reset the carrot search timer to start counting for the next 1-second interval for the quest trail
+            }
+            
+            currentTarget = cachedClosestCarrot; // Set the current target to the cached closest carrot for the quest trail
         }
 
         if (currentTarget != null && currentTarget.gameObject.activeSelf) // Check if the current target is not null and is active in the scene to determine if we should calculate and draw the path for the quest trail

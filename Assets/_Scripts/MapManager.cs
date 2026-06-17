@@ -7,6 +7,8 @@ public class MapManager : MonoBehaviour
     public bool hasMap = false; // Flag to track whether the player has obtained the map item, initialized to false since the player starts without the map
     private bool isMapActive = false; // Flag to track whether the map camera is currently active, initialized to false since the map camera starts disabled
     public GameObject inGameHUD; // Reference to the in-game HUD game object to enable or disable it based on whether the player is viewing the map or not
+    private bool wasFogActive; // Flag to track the previous state of fog in the scene, used to restore the fog state when switching between cameras
+    
     void Start()
     {
         mainCam.SetActive(true); // Ensure the main camera is active at the start of the game since the player does not have the map yet
@@ -30,12 +32,17 @@ public class MapManager : MonoBehaviour
                     Time.timeScale = 0f; // Pause the game when the map camera is active to allow the player to view the map without any in-game distractions or time progression
                     AudioListener.pause = true; // Pause the audio listener to stop all in-game sounds when the map camera is active, enhancing the player's focus on the map
                     inGameHUD.SetActive(false); // Hide the in-game HUD when the map camera is active to provide a clear view of the map without any UI elements obstructing it
+                
+                    wasFogActive = RenderSettings.fog; // Store the current fog state before disabling it to ensure that the fog can be restored to its previous state when switching back to the main camera
+                    RenderSettings.fog = false; // Disable fog when the map camera is active to provide a clearer view of the map, as fog can obscure important details and hinder navigation
                 }
                 else
                 {
                     Time.timeScale = 1f; // Resume the game when the map camera is deactivated to allow the player to continue playing normally
                     AudioListener.pause = false; // Resume the audio listener to allow in-game sounds to play again when the map camera is deactivated
                     inGameHUD.SetActive(true); // Show the in-game HUD when the map camera is deactivated to provide UI elements for the player
+                    
+                    RenderSettings.fog = wasFogActive; // Restore the fog state when the map camera is deactivated
                 }
             }
         }
